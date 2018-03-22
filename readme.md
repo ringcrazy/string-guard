@@ -4,6 +4,19 @@
 # 如何运行
     前端 client: vue-cli 脚手架构建
     后端 server：express 脚手架构建
+        启动mongodb数据库服务
+            cd mongodb
+            ./bin/mongod -f conf/mongod.conf
+        
+        启动网站服务
+            DEBUG=server:* npm start
+
+        启动apidoc
+            apidoc -i routes/ -o apidoc/
+            cd apidoc
+            http-server
+
+        
     部署：通过阿里云平台
 
 # 业务介绍（功能模块）
