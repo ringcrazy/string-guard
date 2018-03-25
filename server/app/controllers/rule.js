@@ -1,10 +1,15 @@
 var mongoose = require("mongoose");
-var Rule = mongoose.model("Rule");
+var Rule = require("../models/rule")
 var _ = require('underscore')
 
 // 设置规则
 exports.update = function(req, res){
-    var ruleObj = req.params.rule
+    var ruleObj = {
+        allowedCount: req.body.allowedCount,
+        workday: req.body.workday,
+        weekend: req.body.weekend
+    }
+    console.log(ruleObj)
     var _rule
     Rule.findOne(function(err, rule){
         if(err){
@@ -17,7 +22,8 @@ exports.update = function(req, res){
             }
             res.json({
                 code: 0,
-                msg: '修改规则成功'
+                msg: '修改规则成功',
+                data: rule
             })
         })
     })
@@ -25,9 +31,7 @@ exports.update = function(req, res){
 
 // 获取规则
 exports.get = function(req, res){
-
     Rule.findOne(function(err, rule){
-        console.log(rule)
         if(err){
             console.log(err)
         }

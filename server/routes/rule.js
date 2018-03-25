@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var Rule = require('../app/controllers/rule')
+var User = require('../app/controllers/user')
 
 /**
  * @api {post} /api/rule/get get
@@ -20,7 +21,7 @@ var Rule = require('../app/controllers/rule')
       }
     }
  */
-router.post('/rule/get', Rule.get);
+router.post('/rule/get', User.signinRequired, Rule.get);
 
 /**
  * @api {post} /api/rule/update update
@@ -28,6 +29,10 @@ router.post('/rule/get', Rule.get);
  * @apiGroup rule
  * @apiDescription 更新规则
  *
+ * @apiParam {int} allowedCount allowedCount 每天允许登录次数
+ * @apiParam {string} workday workday 工作日时间段 {startHour: 8,startMinute: 0,endHour: 17,endMinute: 0}
+ * @apiParam {string} weekend weekend 休息日时间段 {startHour: 8,startMinute: 0,endHour: 13,endMinute: 0}
+ * 
  * @apiVersion 0.0.1
  * @apiSampleRequest http://localhost:3000/api/rule/update
 
@@ -40,8 +45,6 @@ router.post('/rule/get', Rule.get);
       }
     }
  */
-router.post('/rule/update', Rule.update)
-
-
+router.post('/rule/update', User.signinRequired, Rule.update)
 
 module.exports = router;

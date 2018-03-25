@@ -3,6 +3,9 @@
 
 # 如何运行
     前端 client: vue-cli 脚手架构建
+        启动：
+            npm run dev
+
     后端 server：express 脚手架构建
         启动mongodb数据库服务
             cd mongodb

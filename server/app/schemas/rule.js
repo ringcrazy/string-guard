@@ -16,23 +16,39 @@ var RuleScheme = new mongoose.Schema({
 
     // 每天允许登录的时间段
     workday:{
-        start: {
+        startHour: {
             type: Number,
             default: 8
         },
-        end: {
+        endHour: {
             type: Number,
             default: 17
+        },
+        startMinute: {
+            type: Number,
+            default: 0
+        },
+        endMinute: {
+            type: Number,
+            default: 0
         }
     },
     weekend:{
-        start: {
+        startHour: {
             type: Number,
             default: 8
         },
-        end: {
+        startMinute: {
+            type: Number,
+            default: 0
+        },
+        endHour: {
             type: Number,
             default: 13
+        },
+        endMinute: {
+            type: Number,
+            default: 0
         }
     },
 

@@ -1,5 +1,5 @@
 var mongoose = require('mongoose')
-var Article = mongoose.model('Article')
+var Article = require("../models/article")
 var _ = require('underscore')
 
 // 获取
@@ -18,7 +18,9 @@ exports.get = function(req, res){
 
 // 设置
 exports.update = function(req, res){
-    var articleObj = req.params.article
+    var articleObj = {
+        content: req.body.content
+    }
     var _article
     Article.findOne(function(err, article){
         if(err){

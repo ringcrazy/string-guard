@@ -7,6 +7,9 @@ var User = require('../app/controllers/user')
  * @apiName login
  * @apiGroup user
  * @apiDescription 登录
+ * 
+ * @apiParam {string} username 用户名称
+ * @apiParam {string} password 密码
  *
  * @apiVersion 0.0.1
  * @apiSampleRequest http://localhost:3000/api/user/login
@@ -17,6 +20,9 @@ var User = require('../app/controllers/user')
       code: 0,
       msg: '登录成功',
       data: {
+        user: {
+          username: String
+        }
       }
     }
  */
@@ -35,9 +41,7 @@ router.post('/user/login', User.login);
  *   HTTP/1.1 200 OK
     {
       code: 0,
-      msg: '登出成功',
-      data: {
-      }
+      msg: '登出成功'
     }
  */
 router.post('/user/logout', User.logout)

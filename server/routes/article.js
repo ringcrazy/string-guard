@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var Article = require('../app/controllers/article')
+var User = require('../app/controllers/user')
 
 /**
  * @api {post} /api/article/get get
@@ -21,7 +22,7 @@ var Article = require('../app/controllers/article')
       }
     }
  */
-router.post('/article/get', Article.get);
+router.post('/article/get',User.signinRequired, Article.get);
 
 
 /**
@@ -29,6 +30,8 @@ router.post('/article/get', Article.get);
  * @apiName update
  * @apiGroup article
  * @apiDescription 更新字符串
+ * 
+ * @apiParam {string} content content 字符串内容 
  *
  * @apiVersion 0.0.1
  * @apiSampleRequest http://localhost:3000/api/article/update
@@ -43,7 +46,7 @@ router.post('/article/get', Article.get);
       }
     }
  */
-router.post('/article/update', Article.update)
+router.post('/article/update', User.signinRequired, Article.update)
 
 
 

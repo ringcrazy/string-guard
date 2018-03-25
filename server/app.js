@@ -5,8 +5,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var fs = require('fs')
 var mongoose = require('mongoose')
-var bodyParser = require('body-parser')
 var session = require('express-session')
+var _ = require('underscore')
 
 
 // connect mongodb 
@@ -124,10 +124,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // routing
 app.use(function(req, res, next){
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
-  res.header("X-Powered-By",' 3.2.1')
-  res.header("Content-Type", "application/json;charset=utf-8");
+  console.log(req.session.username)
   next();
 })
 app.use('/', indexRouter);
@@ -148,6 +145,28 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+// 定时任务
+var schedule = require('node-schedule')
+var job = schedule.scheduleJob('* * 0 * * *', function(){
+  console.log('scheduleJob begins')
+  var Rule = mongoose.model("Rule");
+  Rule.findOne(function(err, rule){
+    if(err){
+      console.log(err)
+    }
+    var ruleObj = {
+      loginCount: 0
+    }
+    var _rule = _.extend(rule, ruleObj)
+    _rule.save(function(err){
+      if(err){
+        console.log(err)
+      }
+      console.log('重置规则成功')
+    })
+  })
+})
 
 
 
