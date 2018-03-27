@@ -14,6 +14,12 @@ var RuleScheme = new mongoose.Schema({
         default: 10
     },
 
+    // 每天密码错误次数
+    errorCount:{
+        type: Number,
+        default: 0
+    },
+
     // 每天允许登录的时间段
     workday:{
         startHour: {
@@ -22,7 +28,7 @@ var RuleScheme = new mongoose.Schema({
         },
         endHour: {
             type: Number,
-            default: 17
+            default: 23
         },
         startMinute: {
             type: Number,

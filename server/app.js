@@ -12,6 +12,7 @@ var _ = require('underscore')
 // connect mongodb 
 var mongoStore = require('connect-mongo')(session)
 var dbUrl = 'mongodb://127.0.0.1:27017/string-protect'
+// var dbUrl = 'mongodb://localhost:3001/string-protect'
 mongoose.connect(dbUrl, function(err){
   if(err){
     console.log(err)
@@ -155,7 +156,8 @@ var job = schedule.scheduleJob('* * 0 * * *', function(){
       console.log(err)
     }
     var ruleObj = {
-      loginCount: 0
+      loginCount: 0,
+      errorCount: 0
     }
     var _rule = _.extend(rule, ruleObj)
     _rule.save(function(err){

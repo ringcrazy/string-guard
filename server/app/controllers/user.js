@@ -26,61 +26,83 @@ exports.login = function(req, res) {
         console.log(err);
       }
       if (!isMatch) {
-        return res.json({
-          code: 1,
-          msg: "密码错误"
+        // 记录次数
+        Rule.findOne(function(err, rule) {
+          if (rule.errorCount > 2) {
+            return res.json({
+              code: 1,
+              msg: "密码错误次数已超过限定次数3次，用户已锁定，当天无法登录"
+            });
+          } else {
+            ++rule.errorCount;
+            rule.save(function(err, rule) {
+              var leftCount = 3 - rule.errorCount
+              if(leftCount === 0){
+                return res.json({
+                  code: 1,
+                  msg: "密码错误次数已超过限定次数3次，用户已锁定，当天无法登录"
+                });
+              }
+              return res.json({
+                code: 1,
+                msg: "密码错误，还剩"+ leftCount + "次机会"
+              });
+            });
+          }
         });
-      }
+      } else {
+        // 验证规则
+        Rule.findOne(function(err, rule) {
+          if (err) {
+            console.log(err);
+          }
+          if (rule.errorCount > 2) {
+            return res.json({
+              code: 1,
+              msg: "密码错误次数已超过限定次数3次，用户已锁定，当天无法登录"
+            });
+          }
 
-      // 验证规则
-      Rule.findOne(function(err, rule) {
-        if (err) {
-          console.log(err);
-        }
-        if (!rule) {
-          console.log("验证规则不存在");
-        }
+          // 验证登录次数
+          if (rule.loginCount >= rule.allowedCount) {
+            return res.json({
+              code: 1,
+              msg: "当天登录超过给定的次数，无法登录"
+            });
+          }
+          var startHour;
+          var endHour;
+          var startMinute;
+          var endMinute;
+          var day = Moment().day();
+          var hour = Moment().hour();
+          var minute = Moment().minute();
+          if (day === 0 || day === 6) {
+            startHour = rule.weekend.startHour;
+            endHour = rule.weekend.endHour;
+            startMinute = rule.weekend.startMinute;
+            endMinute = rule.weekend.endMinute;
+          } else if (0 < day < 6) {
+            startHour = rule.workday.startHour;
+            endHour = rule.workday.endHour;
+            startMinute = rule.workday.startMinute;
+            endMinute = rule.workday.endMinute;
+          }
 
-        // 验证登录次数
-        if (rule.loginCount >= rule.allowedCount) {
-          return res.json({
-            code: 1,
-            msg: "当天登录超过给定的次数，无法登录"
-          });
-        }
-        var startHour;
-        var endHour;
-        var startMinute;
-        var endMinute;
-        var day = Moment().day();
-        var hour = Moment().hour();
-        var minute = Moment().minute();
-        if (day === 0 || day === 6) {
-          startHour = rule.weekend.startHour;
-          endHour = rule.weekend.endHour;
-          startMinute = rule.weekend.startMinute;
-          endMinute = rule.weekend.endMinute;
-        } else if (0 < day < 6) {
-          startHour = rule.workday.startHour;
-          endHour = rule.workday.endHour;
-          startMinute = rule.workday.startMinute;
-          endMinute = rule.workday.endMinute;
-        }
-
-        function decorate(val){
-            if(val < 10){
-              return '0'+ val
-            }else{
-              return val + ''
+          function decorate(val) {
+            if (val < 10) {
+              return "0" + val;
+            } else {
+              return val + "";
             }
-        }
+          }
 
-        var start = decorate(startHour) + decorate(startMinute)
-        var current = decorate(hour) + decorate(minute)
-        var end = decorate(endHour) + decorate(endMinute)
+          var start = decorate(startHour) + decorate(startMinute);
+          var current = decorate(hour) + decorate(minute);
+          var end = decorate(endHour) + decorate(endMinute);
 
-        // 验证登录时间段
-        if (current >=start   && current < end ) {
+          // 验证登录时间段
+          if (current >= start && current < end) {
             // 更新rule
             ++rule.loginCount;
             rule.save(function(err, rule) {
@@ -93,21 +115,21 @@ exports.login = function(req, res) {
                 msg: "登录成功"
               });
             });
-          
-        } else {
-          return res.json({
-            code: 1,
-            msg: "不在登录时间内，无法登录"
-          });
-        }
-      });
+          } else {
+            return res.json({
+              code: 1,
+              msg: "不在登录时间内，无法登录"
+            });
+          }
+        });
+      }
     });
   });
 };
 
 // 登出
 exports.logout = function(req, res) {
-  delete req.session.username
+  delete req.session.username;
   res.json({
     code: 0,
     msg: "成功退出"
@@ -131,14 +153,14 @@ exports.islogin = function(req, res) {
 
 // 判断用户是否登录
 exports.signinRequired = function(req, res, next) {
-    var username = req.session.username
-    if(!username){
-        return res.json({
-            code: 2,
-            msg: '当前用户未登录'
-        })
-    }
-    next()
+  var username = req.session.username;
+  if (!username) {
+    return res.json({
+      code: 2,
+      msg: "当前用户未登录"
+    });
+  }
+  next();
 };
 
 // 更改密码
