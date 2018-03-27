@@ -14,7 +14,7 @@ exports.login = function(req, res) {
       console.log(err);
     }
     if (!user) {
-      res.json({
+      return res.json({
         code: 1,
         msg: "该用户不存在"
       });
@@ -45,7 +45,7 @@ exports.login = function(req, res) {
         if (rule.loginCount >= rule.allowedCount) {
           return res.json({
             code: 1,
-            msg: "登录超过给定的次数，无法登录"
+            msg: "当天登录超过给定的次数，无法登录"
           });
         }
         var startHour;

@@ -9,7 +9,12 @@ exports.update = function(req, res){
         workday: req.body.workday,
         weekend: req.body.weekend
     }
-    console.log(ruleObj)
+    if(ruleObj.allowedCount<=0 || ruleObj.allowedCount > 10 ){
+        return res.json({
+            code: 1,
+            msg: '允许登录次数需设置在1-10次之间'
+        })
+    }
     var _rule
     Rule.findOne(function(err, rule){
         if(err){

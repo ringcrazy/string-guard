@@ -11,7 +11,7 @@ var _ = require('underscore')
 
 // connect mongodb 
 var mongoStore = require('connect-mongo')(session)
-var dbUrl = 'mongodb://localhost:3001/string-protect'
+var dbUrl = 'mongodb://127.0.0.1:3001/string-protect'
 mongoose.connect(dbUrl, function(err){
   if(err){
     console.log(err)
@@ -124,7 +124,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 // routing
 app.use(function(req, res, next){
   res.header("Access-Control-Allow-Origin", "*");
-  console.log(req.session.username)
   next();
 })
 app.use('/', indexRouter);

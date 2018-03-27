@@ -19,12 +19,6 @@
         is-link
         value="设置">
       </mt-cell>
-      <mt-cell
-        title="修改密码"
-        to="/info"
-        is-link
-        value="修改">
-      </mt-cell>
       </div>
       <div class="btn-container">
           <mt-button size="large" type="danger" @click="quit">退出</mt-button>
