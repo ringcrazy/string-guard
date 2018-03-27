@@ -11,7 +11,7 @@ var _ = require('underscore')
 
 // connect mongodb 
 var mongoStore = require('connect-mongo')(session)
-var dbUrl = 'mongodb://127.0.0.1:3001/string-protect'
+var dbUrl = 'mongodb://127.0.0.1:27017/string-protect'
 mongoose.connect(dbUrl, function(err){
   if(err){
     console.log(err)
